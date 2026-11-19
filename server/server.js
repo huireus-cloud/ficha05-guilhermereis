@@ -80,8 +80,13 @@ app.get("/api/cartas", (req, res) => {
 
 // API: acrescenta uma carta
 app.post("/api/cartas", (req, res) => {
-  const { name, type, attack } = req.body;
-  const card = { name, type, attack, defense: 0 };
+  const { name, type, attack } = req.body ?? {};
+
+  if (typeof name !== "string" || name.trim() === "" || !type) {
+    return res.status(400).json({ error: "Falta o nome ou o tipo da carta" });
+  }
+
+  const card = { name: name.trim(), type, attack, defense: 0 };
 
   cards.push(card);
   fs.writeFileSync(FILE, JSON.stringify(cards, null, 2));
