@@ -51,7 +51,6 @@ function App() {
       </main>
     );
   }
-
   return (
     <main>
       <h1>A minha coleção</h1>
@@ -74,7 +73,6 @@ function App() {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Procurar pelo nome…"
       />
-
       {visible.length === 0 ? (
         <p>Nenhuma carta corresponde.</p>
       ) : (
@@ -84,7 +82,6 @@ function App() {
           ))}
         </ul>
       )}
-
       <h2>Carta à sorte</h2>
       <button onClick={pickRandom}>Escolher outra</button>
       {randomCard && (
@@ -96,5 +93,4 @@ function App() {
     </main>
   );
 }
-
 export default App;
