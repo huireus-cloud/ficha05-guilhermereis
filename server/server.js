@@ -1,15 +1,16 @@
 const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
-const cards = [
-  { name: "Dragão de Cobalto", type: "Criatura", attack: 7, defense: 5 },
-  { name: "Guardiã das Marés", type: "Criatura", attack: 4, defense: 8 },
-  { name: "Rito de Ferro", type: "Feitiço", attack: 0, defense: 0 },
-  { name: "Sentinela de Âmbar", type: "Criatura", attack: 6, defense: 6 },
-  { name: "Eco do Vazio", type: "Feitiço", attack: 0, defense: 0 },
-];
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.json());
+
+const FILE = path.join(__dirname, "cartas.json");
+const cards = JSON.parse(fs.readFileSync(FILE, "utf8"));
 
 function page(title, body) {
   return `<!DOCTYPE html>
@@ -74,8 +75,17 @@ app.get("/agora", (req, res) => {
 
 // API: devolve as cartas em JSON
 app.get("/api/cartas", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "http://localhost:5173");
   res.json(cards);
+});
+
+// API: acrescenta uma carta
+app.post("/api/cartas", (req, res) => {
+  const { name, type, attack } = req.body;
+  const card = { name, type, attack, defense: 0 };
+
+  cards.push(card);
+  fs.writeFileSync(FILE, JSON.stringify(cards, null, 2));
+  res.status(201).json(card);
 });
 
 app.use((req, res) => {
